@@ -312,10 +312,17 @@ export default function HiveView({ zone, onBack }) {
                 </div>
             </div>
 
-            <div style={{ flex: 1, display: 'flex', padding: '32px', gap: '32px', overflow: 'hidden' }}>
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                padding: '32px',
+                gap: isMissionComplete ? '32px' : '0px',
+                overflow: 'hidden',
+                transition: 'gap 1.5s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}>
                 {/* Canvas Container that shrinks when complete */}
                 <div style={{
-                    flex: isMissionComplete ? '0 0 50%' : '1',
+                    flex: isMissionComplete ? '0 0 calc(50% - 16px)' : '1',
                     transition: 'flex 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
                     position: 'relative',
                     border: '1px solid var(--gold-border)',
@@ -351,49 +358,52 @@ export default function HiveView({ zone, onBack }) {
 
                 {/* Text Area that fades in when complete */}
                 <div style={{
-                    flex: '1',
+                    flex: isMissionComplete ? '0 0 calc(50% - 16px)' : '0 0 0px',
                     opacity: isMissionComplete ? 1 : 0,
                     transform: isMissionComplete ? 'translateX(0)' : 'translateX(50px)',
-                    transition: 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s', // Delay fade in
+                    transition: 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
                     pointerEvents: isMissionComplete ? 'auto' : 'none',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
-                    padding: '0 40px'
+                    padding: isMissionComplete ? '0 40px' : '0',
+                    overflow: 'hidden'
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                        <CheckCircle size={48} color="var(--green-healthy)" />
-                        <div>
-                            <h1 className="hud-title" style={{ fontSize: '28px', color: 'var(--green-healthy)' }}>MISSION SUCCESS</h1>
-                            <h2 className="hud-subtitle" style={{ fontSize: '14px' }}>POLLINATION CYCLE COMPLETE</h2>
+                    <div style={{ minWidth: '500px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                            <CheckCircle size={48} color="var(--green-healthy)" />
+                            <div>
+                                <h1 className="hud-title" style={{ fontSize: '28px', color: 'var(--green-healthy)' }}>MISSION SUCCESS</h1>
+                                <h2 className="hud-subtitle" style={{ fontSize: '14px' }}>POLLINATION CYCLE COMPLETE</h2>
+                            </div>
                         </div>
-                    </div>
 
-                    <div style={{ borderLeft: '2px solid var(--gold-border)', paddingLeft: '24px' }}>
-                        <p style={{ color: 'var(--gold-primary)', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px' }}>
-                            The Pollidrone swarm has successfully navigated the sector, identifying and pollinating all target crops with 100% accuracy.
-                        </p>
-                        <p style={{ color: 'var(--gold-text-muted)', fontSize: '14px', lineHeight: '1.6', marginBottom: '16px' }}>
-                            Driven by decentralized MAPPO algorithms on the NVIDIA AGX Orin, the drones dynamically allocated targets, avoided collisions, and utilized optimized pathing to maximize battery efficiency while ensuring complete agricultural coverage.
-                        </p>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                            <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
-                                <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>TOTAL FLIGHT TIME</div>
-                                <div style={{ color: 'var(--gold-primary)', fontSize: '16px', fontWeight: 500 }}>04m 12s</div>
-                            </li>
-                            <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
-                                <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>CROPS POLLINATED</div>
-                                <div style={{ color: 'var(--green-healthy)', fontSize: '16px', fontWeight: 500 }}>80 / 80</div>
-                            </li>
-                            <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
-                                <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>AVERAGE LATENCY</div>
-                                <div style={{ color: 'var(--gold-primary)', fontSize: '16px', fontWeight: 500 }}>12ms via DGX Spark</div>
-                            </li>
-                            <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
-                                <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>HARDWARE STATUS</div>
-                                <div style={{ color: 'var(--green-healthy)', fontSize: '16px', fontWeight: 500 }}>ALL SYSTEMS GREEN</div>
-                            </li>
-                        </ul>
+                        <div style={{ borderLeft: '2px solid var(--gold-border)', paddingLeft: '24px' }}>
+                            <p style={{ color: 'var(--gold-primary)', fontSize: '16px', lineHeight: '1.6', marginBottom: '16px', whiteSpace: 'normal' }}>
+                                The Pollidrone swarm has successfully navigated the sector, identifying and pollinating all target crops with 100% accuracy.
+                            </p>
+                            <p style={{ color: 'var(--gold-text-muted)', fontSize: '14px', lineHeight: '1.6', marginBottom: '16px', whiteSpace: 'normal' }}>
+                                Driven by decentralized MAPPO algorithms on the NVIDIA AGX Orin, the drones dynamically allocated targets, avoided collisions, and utilized optimized pathing to maximize battery efficiency while ensuring complete agricultural coverage.
+                            </p>
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
+                                    <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>TOTAL FLIGHT TIME</div>
+                                    <div style={{ color: 'var(--gold-primary)', fontSize: '16px', fontWeight: 500 }}>04m 12s</div>
+                                </li>
+                                <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
+                                    <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>CROPS POLLINATED</div>
+                                    <div style={{ color: 'var(--green-healthy)', fontSize: '16px', fontWeight: 500 }}>80 / 80</div>
+                                </li>
+                                <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
+                                    <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>AVERAGE LATENCY</div>
+                                    <div style={{ color: 'var(--gold-primary)', fontSize: '16px', fontWeight: 500 }}>12ms via DGX Spark</div>
+                                </li>
+                                <li style={{ background: 'var(--bg-hud)', padding: '12px', border: '1px solid var(--gold-border)' }}>
+                                    <div style={{ fontSize: '10px', color: 'var(--gold-text-muted)', fontFamily: 'monospace' }}>HARDWARE STATUS</div>
+                                    <div style={{ color: 'var(--green-healthy)', fontSize: '16px', fontWeight: 500 }}>ALL SYSTEMS GREEN</div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
