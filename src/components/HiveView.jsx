@@ -16,13 +16,11 @@ export default function HiveView({ zone, onBack }) {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
         };
-        resize();
-        window.addEventListener('resize', resize);
-
-        const W = canvas.width;
-        const H = canvas.height;
-        const CX = W / 2;
-        const CY = H / 2;
+        // True center of the virtual space where the server lives
+        const BASE_W = canvas.parentElement.clientWidth;
+        const BASE_H = canvas.parentElement.clientHeight;
+        const CX = BASE_W / 2;
+        const CY = BASE_H / 2;
 
         const C_DRONE = '#FFD700'; // Yellow
         const C_FLOWER_POLL = '#4CAF50'; // Green
@@ -30,12 +28,12 @@ export default function HiveView({ zone, onBack }) {
 
         // Init crops (scattered, avoiding server center)
         elementsRef.current.flowers = Array.from({ length: 80 }, () => {
-            let fx = Math.random() * W;
-            let fy = Math.random() * H;
+            let fx = Math.random() * BASE_W;
+            let fy = Math.random() * BASE_H;
             // push away from center server
             while (Math.hypot(fx - CX, fy - CY) < 100) {
-                fx = Math.random() * W;
-                fy = Math.random() * H;
+                fx = Math.random() * BASE_W;
+                fy = Math.random() * BASE_H;
             }
             return {
                 x: fx,
@@ -174,8 +172,18 @@ export default function HiveView({ zone, onBack }) {
         };
 
         const animate = () => {
+            // Get current dimensions to calculate offset
+            const currentW = canvas.width;
+            const currentH = canvas.height;
+            const offsetX = (currentW - BASE_W) / 2;
+            const offsetY = (currentH - BASE_H) / 2;
+
+            ctx.save();
             ctx.fillStyle = 'rgba(3, 3, 3, 0.4)'; // Slight trail effect
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, currentW, currentH);
+
+            // Shift drawing context to keep BASE centered
+            ctx.translate(offsetX, offsetY);
 
             const { flowers, drones } = elementsRef.current;
 
@@ -266,15 +274,17 @@ export default function HiveView({ zone, onBack }) {
                     d.x += d.vx;
                     d.y += d.vy;
 
-                    // Bounds check
+                    // Bounds check based on BASE coords
                     if (d.x < 0) d.vx += 2;
-                    if (d.x > W) d.vx -= 2;
+                    if (d.x > BASE_W) d.vx -= 2;
                     if (d.y < 0) d.vy += 2;
-                    if (d.y > H) d.vy -= 2;
+                    if (d.y > BASE_H) d.vy -= 2;
 
                     drawQuadcopter(ctx, d);
                 }
             });
+
+            ctx.restore(); // Restore offset
 
             // Check win condition
             if (!anyUnpollinated && allDocked) {
