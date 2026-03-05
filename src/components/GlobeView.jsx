@@ -51,13 +51,13 @@ export default function GlobeView({ onHiveSelect, globeRef }) {
             .then(data => setLandPolygons(data.features));
     }, []);
 
-    const markerSvg = `< svg viewBox = "-4 0 36 36" xmlns = "http://www.w3.org/2000/svg" >
+    const markerSvg = `<svg viewBox="-4 0 36 36" xmlns="http://www.w3.org/2000/svg">
     <path fill="rgba(230,184,92,0.2)" stroke="#e6b85c" stroke-width="2" d="M14 0L28 7v14L14 28L0 21V7z" />
     <circle cx="14" cy="14" r="4" fill="#ffc14d" />
-  </svg > `;
+  </svg>`;
 
     const markerMaterial = useMemo(() => {
-        const map = new THREE.TextureLoader().load(`data: image / svg + xml; charset = utf - 8, ${encodeURIComponent(markerSvg)} `);
+        const map = new THREE.TextureLoader().load(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(markerSvg)}`);
         return new THREE.SpriteMaterial({ map: map, transparent: true });
     }, [markerSvg]);
 

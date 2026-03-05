@@ -2,17 +2,20 @@ import React, { useState, useRef, useCallback } from 'react';
 import HUD from './components/HUD';
 import GlobeView from './components/GlobeView';
 import HiveView from './components/HiveView';
-import PresentationOverlay from './components/PresentationOverlay';
+import DeclineMetricsView from './components/DeclineMetricsView';
+import DeclineAlertWidget from './components/DeclineAlertWidget';
 
 export default function App() {
     const globeRef = useRef();
     const [selectedZone, setSelectedZone] = useState(null);
     const [hiveHealth] = useState(98);
-    const [showExperience, setShowExperience] = useState(true); // Default to showing the event overlay
+    // True = showing the dramatic metrics covering the screen.
+    // False = showing the globe with the alert widget hovering on the left.
+    const [showMetricsOverlay, setShowMetricsOverlay] = useState(false);
 
     const handleHiveSelect = useCallback((zone) => {
-        // Hide the presentation overlay to focus on the hive
-        setShowExperience(false);
+        // Hide the metrics overlay to focus on the hive
+        setShowMetricsOverlay(false);
 
         // Animate camera to the hive
         if (globeRef.current) {
@@ -33,8 +36,6 @@ export default function App() {
 
     const handleBackToGlobe = useCallback(() => {
         setSelectedZone(null);
-        // Bring back the presentation overlay
-        setTimeout(() => setShowExperience(true), 500);
 
         if (globeRef.current) {
             // Zoom back out to generic view
@@ -50,82 +51,80 @@ export default function App() {
     }, []);
 
     return (
-        <div style={{ position: 'relative', width: '100vw', height: '100vh', background: '#030303', display: 'flex', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', width: '100vw', height: '100vh', background: '#030303', overflow: 'hidden' }}>
 
-            {/* Event Experience Presentation Overlay */}
-            {showExperience && !selectedZone && (
-                <div style={{ zIndex: 20 }}>
-                    <PresentationOverlay />
-                </div>
+            {/* Main Interactive Globe Area */}
+            <GlobeView
+                globeRef={globeRef}
+                onHiveSelect={handleHiveSelect}
+            />
+
+            {/* Main HUD overlay visible in global mode */}
+            {!selectedZone && (
+                <>
+                    <HUD
+                        hiveHealth={hiveHealth}
+                        isDragActive={true}
+                        onResetZoom={handleResetZoom}
+                    />
+
+                    {/* Left-side Alert Widget */}
+                    {!showMetricsOverlay && (
+                        <DeclineAlertWidget onClick={() => setShowMetricsOverlay(true)} />
+                    )}
+
+                    {/* Hero Title */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '40px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        zIndex: 10,
+                        pointerEvents: 'none',
+                        textAlign: 'center'
+                    }}>
+                        <h1 style={{
+                            fontSize: '3rem',
+                            fontWeight: '700',
+                            letterSpacing: '12px',
+                            color: 'var(--gold-primary)',
+                            textShadow: '0 0 20px rgba(255, 193, 77, 0.5)',
+                            margin: 0,
+                            textTransform: 'uppercase'
+                        }}>
+                            POLLIDRONE
+                        </h1>
+                        <div style={{
+                            width: '40%',
+                            height: '1px',
+                            background: 'var(--gold-border)',
+                            margin: '8px auto'
+                        }} />
+                        <p style={{
+                            color: 'var(--gold-text-muted)',
+                            letterSpacing: '6px',
+                            fontSize: '12px',
+                            textTransform: 'uppercase',
+                            margin: 0
+                        }}>
+                            Planetary Swarm Control
+                        </p>
+                    </div>
+                </>
             )}
 
-            {/* Main Interactive Area (Globe or HiveView) */}
-            <div style={{ flex: 1, position: 'relative' }}>
-                {/* 3D Global View */}
-                <GlobeView
-                    globeRef={globeRef}
-                    onHiveSelect={handleHiveSelect}
+            {/* Event Experience Full Screen Presentation Overlay */}
+            {showMetricsOverlay && !selectedZone && (
+                <DeclineMetricsView onClose={() => setShowMetricsOverlay(false)} />
+            )}
+
+            {/* Zoomed Hive Overlay visible only when a zone is selected */}
+            {selectedZone && (
+                <HiveView
+                    zone={selectedZone}
+                    onBack={handleBackToGlobe}
                 />
-
-                {/* Main HUD overlay visible in global mode */}
-                {!selectedZone && (
-                    <>
-                        <HUD
-                            hiveHealth={hiveHealth}
-                            isDragActive={true}
-                            onResetZoom={handleResetZoom}
-                        />
-
-                        {/* Hero Title */}
-                        {showExperience === false && (
-                            <div style={{
-                                position: 'absolute',
-                                top: '40px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                zIndex: 10,
-                                pointerEvents: 'none',
-                                textAlign: 'center'
-                            }}>
-                                <h1 style={{
-                                    fontSize: '3rem',
-                                    fontWeight: '700',
-                                    letterSpacing: '12px',
-                                    color: 'var(--gold-primary)',
-                                    textShadow: '0 0 20px rgba(255, 193, 77, 0.5)',
-                                    margin: 0,
-                                    textTransform: 'uppercase'
-                                }}>
-                                    POLLIDRONE
-                                </h1>
-                                <div style={{
-                                    width: '40%',
-                                    height: '1px',
-                                    background: 'var(--gold-border)',
-                                    margin: '8px auto'
-                                }} />
-                                <p style={{
-                                    color: 'var(--gold-text-muted)',
-                                    letterSpacing: '6px',
-                                    fontSize: '12px',
-                                    textTransform: 'uppercase',
-                                    margin: 0
-                                }}>
-                                    Planetary Swarm Control
-                                </p>
-                            </div>
-                        )}
-                    </>
-                )}
-
-                {/* Zoomed Hive Overlay visible only when a zone is selected */}
-                {selectedZone && (
-                    <HiveView
-                        zone={selectedZone}
-                        onBack={handleBackToGlobe}
-                    />
-                )}
-            </div>
+            )}
         </div>
     );
 }
