@@ -318,12 +318,12 @@ export default function HiveView({ zone, onBack }) {
                 padding: '32px',
                 gap: isMissionComplete ? '32px' : '0px',
                 overflow: 'hidden',
-                transition: 'gap 1.5s cubic-bezier(0.16, 1, 0.3, 1)'
+                transition: 'gap 2.5s ease-in-out'
             }}>
                 {/* Canvas Container that shrinks when complete */}
                 <div style={{
                     flex: isMissionComplete ? '0 0 calc(50% - 16px)' : '1',
-                    transition: 'flex 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transition: 'flex 2.5s ease-in-out',
                     position: 'relative',
                     border: '1px solid var(--gold-border)',
                     borderRadius: '4px',
@@ -361,7 +361,7 @@ export default function HiveView({ zone, onBack }) {
                     flex: isMissionComplete ? '0 0 calc(50% - 16px)' : '0 0 0px',
                     opacity: isMissionComplete ? 1 : 0,
                     transform: isMissionComplete ? 'translateX(0)' : 'translateX(50px)',
-                    transition: 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transition: 'all 2.5s ease-in-out',
                     pointerEvents: isMissionComplete ? 'auto' : 'none',
                     display: 'flex',
                     flexDirection: 'column',
