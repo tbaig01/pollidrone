@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-deep-space: #030303;
+  --bg-hud: rgba(10, 8, 5, 0.4);
+  --gold-primary: #e6b85c;
+  --gold-glow: #ffc14d;
+  --gold-dim: #8b6d39;
+  --gold-text-muted: #bda27e;
+  --gold-border: rgba(230, 184, 92, 0.3);
+  --green-healthy: #4caf50;
+  
+  --font-hud: 'Space Grotesk', sans-serif;
+  --hud-padding: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-hud);
+  background-color: var(--bg-deep-space);
+  color: var(--gold-primary);
+  overflow: hidden; /* Hide scrollbars for the 3D view */
+  user-select: none;
+}
+
+/* HUD Panel Base Style */
+.hud-panel {
+  position: absolute;
+  background: var(--bg-hud);
+  border: 1px solid var(--gold-border);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 12px 16px;
+  z-index: 10;
+}
+
+/* Specific HUD positioning */
+.hud-top-left {
+  top: var(--hud-padding);
+  left: var(--hud-padding);
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  padding: 0;
+}
+
+.hud-top-right {
+  top: var(--hud-padding);
+  right: var(--hud-padding);
+}
+
+.hud-bottom-left {
+  bottom: var(--hud-padding);
+  left: var(--hud-padding);
+}
+
+.hud-bottom-right {
+  bottom: var(--hud-padding);
+  right: var(--hud-padding);
+}
+
+/* Typography elements */
+h1.hud-title {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--gold-primary);
+  text-shadow: 0 0 10px rgba(255, 193, 77, 0.4);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+h2.hud-subtitle {
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--gold-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+/* Interactive elements */
+.hud-button {
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  color: var(--gold-primary);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-button:hover {
+  background: rgba(230, 184, 92, 0.1);
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 12px rgba(230, 184, 92, 0.2);
+}
+
+.status-value {
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding-top: 4px;
+}
+
+.status-label {
+  font-size: 10px;
+  color: var(--gold-text-muted);
+  letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold-glow); }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.animate-pulse {
+  animation: pulse 3s infinite ease-in-out;
+}
