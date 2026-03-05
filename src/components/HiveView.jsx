@@ -13,12 +13,17 @@ export default function HiveView({ zone, onBack }) {
         const ctx = canvas.getContext('2d');
 
         const resize = () => {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            if (canvas && canvas.parentElement) {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
         };
+        resize();
+        window.addEventListener('resize', resize);
+
         // True center of the virtual space where the server lives
-        const BASE_W = canvas.parentElement.clientWidth;
-        const BASE_H = canvas.parentElement.clientHeight;
+        const BASE_W = canvas.width;
+        const BASE_H = canvas.height;
         const CX = BASE_W / 2;
         const CY = BASE_H / 2;
 
