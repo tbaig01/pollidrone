@@ -177,6 +177,12 @@ export default function HiveView({ zone, onBack }) {
         };
 
         const animate = () => {
+            // Ensure internal resolution perfectly matches physical CSS size during flex animation
+            if (canvas.width !== canvas.parentElement.clientWidth || canvas.height !== canvas.parentElement.clientHeight) {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+
             // Get current dimensions to calculate offset
             const currentW = canvas.width;
             const currentH = canvas.height;
