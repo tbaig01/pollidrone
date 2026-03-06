@@ -4,6 +4,8 @@ import GlobeView from './components/GlobeView';
 import HiveView from './components/HiveView';
 import DeclineMetricsView from './components/DeclineMetricsView';
 import DeclineAlertWidget from './components/DeclineAlertWidget';
+import SystemGuideView from './components/SystemGuideView';
+import SystemGuideWidget from './components/SystemGuideWidget';
 
 export default function App() {
     const globeRef = useRef();
@@ -12,6 +14,7 @@ export default function App() {
     // True = showing the dramatic metrics covering the screen.
     // False = showing the globe with the alert widget hovering on the left.
     const [showMetricsOverlay, setShowMetricsOverlay] = useState(false);
+    const [showSystemGuide, setShowSystemGuide] = useState(false);
 
     const handleHiveSelect = useCallback((zone) => {
         // Hide the metrics overlay to focus on the hive
@@ -69,8 +72,13 @@ export default function App() {
                     />
 
                     {/* Left-side Alert Widget */}
-                    {!showMetricsOverlay && (
+                    {!showMetricsOverlay && !showSystemGuide && (
                         <DeclineAlertWidget onClick={() => setShowMetricsOverlay(true)} />
+                    )}
+
+                    {/* Right-side System Guide Widget */}
+                    {!showMetricsOverlay && !showSystemGuide && (
+                        <SystemGuideWidget onClick={() => setShowSystemGuide(true)} />
                     )}
 
                     {/* Hero Title */}
@@ -116,6 +124,11 @@ export default function App() {
             {/* Event Experience Full Screen Presentation Overlay */}
             {showMetricsOverlay && !selectedZone && (
                 <DeclineMetricsView onClose={() => setShowMetricsOverlay(false)} />
+            )}
+
+            {/* System Guide Full Screen Presentation Overlay */}
+            {showSystemGuide && !selectedZone && (
+                <SystemGuideView onClose={() => setShowSystemGuide(false)} />
             )}
 
             {/* Zoomed Hive Overlay visible only when a zone is selected */}

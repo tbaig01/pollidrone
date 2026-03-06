@@ -10,6 +10,8 @@
   --gold-border: rgba(230, 184, 92, 0.3);
   --green-healthy: #4caf50;
   --red-alert: #c94c4c;
+  --blue-accent: #4c8dc9;
+  --blue-glow: rgba(76, 141, 201, 0.15);
 
   --font-hud: 'Space Grotesk', sans-serif;
   --hud-padding: 24px;
