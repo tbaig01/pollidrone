@@ -248,6 +248,7 @@ export default function SystemGuideView({ onClose }) {
                             "Bloom-stage classification at flower level",
                             "Detects natural pollinator activity — avoids zones pollinators are already handling",
                             "Generates energy-efficient coverage routes with zero overlap",
+                            "Swarm coordination powered by MAPPO (Multi-Agent Proximal Policy Optimization) — each drone learns its own policy, but a shared critic sees global state during training. At inference, drones act on local observations alone. This is CTDE: Centralized Training, Decentralized Execution",
                             "Models improve over time from accumulated field data",
                         ]}
                     />
@@ -264,7 +265,7 @@ export default function SystemGuideView({ onClose }) {
                             "Maps exactly what's happening at flower level",
                             "Once a deficit is confirmed, a BeeHive deployment is formally proposed to the region's governing body or conservation partner",
                             "Feeds actionable proposals to governments (DEFRA, FAO) and charities (WWF, local trusts)",
-                            "First-ever dataset combining drone-level + satellite-level analysis",
+                            "At the bleeding edge of research on swarm-based pollination systems — most published work focuses on single-drone pollination (e.g., durian crops). Multi-agent swarm intelligence for pollination at this scale is uncharted territory",
                         ]}
                     />
                 </div>
@@ -336,15 +337,21 @@ export default function SystemGuideView({ onClose }) {
                 {/* ══════════════════════════════════════════════════════
                     SECTION 3: THREE TIERS. THREE NVIDIA PRODUCTS. (Slide 7)
                 ══════════════════════════════════════════════════════ */}
-                <SectionDivider title="THREE TIERS" subtitle="Three NVIDIA products across three deployment layers" color={BLUE} />
+                <SectionDivider title="FOUR TIERS" subtitle="Four NVIDIA products across four deployment layers" color={BLUE} />
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: "10px 0" }}>
-                    <TierCard tier="TIER 1 · CLOUD" title="Conservation Cloud" hardware="DGX Spark" tops="Trains all 3 model families" icon="☁️" color={NVIDIA_GREEN} delay={0}>
-                        Fleet management dashboard, conservation data aggregation, MARL policy training in simulation. Software updates deployed to BeeHives.
+                    <TierCard tier="TIER 0 · TRAINING" title="DGX Spark — The Training Engine" hardware="DGX Spark" tops="128GB Grace Blackwell" icon="🧠" color={NVIDIA_GREEN} delay={0}>
+                        The powerhouse behind all intelligence in the system. Trains drone swarm policies using <strong style={{ color: NVIDIA_GREEN }}>Multi-Agent Reinforcement Learning (MARL)</strong> via MAPPO — running thousands upon thousands of simulated episodes in NVIDIA Isaac Sim to teach cooperative behaviours.
+                        This is where <strong style={{ color: NVIDIA_GREEN }}>CTDE (Centralized Training, Decentralized Execution)</strong> happens — a shared critic sees global state from every agent during training, so the swarm learns team-level strategies. At deployment, each drone acts independently on local observations alone.
+                        DGX Spark's 128GB unified memory is essential — standard GPUs cannot hold the full multi-agent simulation state. Beyond MARL policies, it also trains <strong style={{ color: BLUE }}>agricultural classification models</strong> (bloom-stage, pollinator detection, YOLOv8) and <strong style={{ color: GOLD }}>satellite pollinator health models</strong> (NDVI/EVI deficit prediction). All three model families depend on this local compute.
+                    </TierCard>
+
+                    <TierCard tier="TIER 1 · CLOUD" title="Conservation Cloud" hardware="DGX Spark" tops="Fleet Management" icon="☁️" color={NVIDIA_GREEN} delay={100}>
+                        Fleet management dashboard, conservation data aggregation, and software update deployment to BeeHives.
                         Satellite data serves as a <strong style={{ color: NVIDIA_GREEN }}>sales and conservation tool</strong>, not an operational trigger.
                     </TierCard>
 
-                    <TierCard tier="TIER 2 · FIELD" title="The BeeHive" hardware="Jetson AGX Orin" tops="275 TOPS" icon="🏗️" color={BLUE} delay={150}>
+                    <TierCard tier="TIER 2 · FIELD" title="The BeeHive" hardware="Jetson AGX Orin" tops="275 TOPS" icon="🏗️" color={BLUE} delay={200}>
                         The real operational brain. Plans missions, coordinates the entire swarm, tracks coverage, adapts to weather — all locally with <strong style={{ color: BLUE }}>zero cloud dependency</strong>.
                         A ruggedised unit at field edge with drone storage, charging docks, and pollen supply. Operates fully independently when offline.
                     </TierCard>
@@ -401,6 +408,74 @@ export default function SystemGuideView({ onClose }) {
                         </div>
                     </div>
                 </div>
+                {/* ══════════════════════════════════════════════════════
+                    DEPLOYMENT ARCHITECTURE FLOWCHART
+                ══════════════════════════════════════════════════════ */}
+                <SectionDivider title="ARCHITECTURE" subtitle="How the tiers connect" color={BLUE} />
+
+                <div style={{
+                    display: "flex", justifyContent: "center", padding: "10px 0 20px",
+                }}>
+                    <svg viewBox="0 0 700 480" width="700" height="480" style={{ maxWidth: "100%" }}>
+                        {/* ── DGX Spark node (left side) ── */}
+                        <rect x="40" y="170" width="180" height="70" rx="10"
+                            fill="rgba(118,185,0,0.08)" stroke="#76b900" strokeWidth="2" />
+                        <text x="130" y="198" textAnchor="middle"
+                            fill="#76b900" fontSize="16" fontFamily="monospace" fontWeight="700" letterSpacing="0.1em">DGX SPARK</text>
+                        <text x="130" y="220" textAnchor="middle"
+                            fill="#b0a58a" fontSize="11" fontFamily="monospace">TIER 0 · TRAINING</text>
+
+                        {/* ── Cloud node (top center) ── */}
+                        <rect x="340" y="30" width="200" height="70" rx="10"
+                            fill="rgba(76,141,201,0.08)" stroke="#4c8dc9" strokeWidth="2" />
+                        <text x="440" y="58" textAnchor="middle"
+                            fill="#4c8dc9" fontSize="16" fontFamily="monospace" fontWeight="700" letterSpacing="0.1em">☁️ CLOUD</text>
+                        <text x="440" y="80" textAnchor="middle"
+                            fill="#b0a58a" fontSize="11" fontFamily="monospace">TIER 1 · FLEET MGMT</text>
+
+                        {/* ── BeeHive node (middle center) ── */}
+                        <rect x="340" y="190" width="200" height="70" rx="10"
+                            fill="rgba(76,141,201,0.08)" stroke="#4c8dc9" strokeWidth="2" />
+                        <text x="440" y="218" textAnchor="middle"
+                            fill="#4c8dc9" fontSize="16" fontFamily="monospace" fontWeight="700" letterSpacing="0.1em">🏗️ BEEHIVE</text>
+                        <text x="440" y="240" textAnchor="middle"
+                            fill="#b0a58a" fontSize="11" fontFamily="monospace">TIER 2 · AGX ORIN · FIELD</text>
+
+                        {/* ── Pollidrone node (bottom center) ── */}
+                        <rect x="340" y="370" width="200" height="70" rx="10"
+                            fill="rgba(201,168,76,0.08)" stroke="#c9a84c" strokeWidth="2" />
+                        <text x="440" y="398" textAnchor="middle"
+                            fill="#c9a84c" fontSize="16" fontFamily="monospace" fontWeight="700" letterSpacing="0.1em">🐝 POLLIDRONE</text>
+                        <text x="440" y="420" textAnchor="middle"
+                            fill="#b0a58a" fontSize="11" fontFamily="monospace">TIER 3 · ORIN NANO · EDGE</text>
+
+                        {/* ── Cloud → BeeHive (dotted line) ── */}
+                        <line x1="440" y1="100" x2="440" y2="190"
+                            stroke="#4c8dc9" strokeWidth="2" strokeDasharray="8,6" />
+                        <polygon points="432,186 440,196 448,186" fill="#4c8dc9" />
+                        <text x="458" y="148" fill="#7da8c9" fontSize="11" fontFamily="monospace">Software updates</text>
+
+                        {/* ── BeeHive → Pollidrone (solid line) ── */}
+                        <line x1="440" y1="260" x2="440" y2="370"
+                            stroke="#4c8dc9" strokeWidth="2.5" />
+                        <polygon points="432,366 440,376 448,366" fill="#4c8dc9" />
+                        <text x="458" y="320" fill="#7da8c9" fontSize="11" fontFamily="monospace">Mission commands</text>
+
+                        {/* ── DGX Spark → BeeHive (magenta dotted, "Edge deployment") ── */}
+                        <line x1="220" y1="195" x2="336" y2="215"
+                            stroke="#c850c0" strokeWidth="2" strokeDasharray="8,5" />
+                        <polygon points="332,208 342,215 332,222" fill="#c850c0" />
+
+                        {/* ── DGX Spark → Pollidrone (magenta dotted, "Edge deployment") ── */}
+                        <line x1="170" y1="240" x2="336" y2="395"
+                            stroke="#c850c0" strokeWidth="2" strokeDasharray="8,5" />
+                        <polygon points="330,390 340,398 334,405" fill="#c850c0" />
+
+                        {/* ── "Edge deployment" label ── */}
+                        <text x="218" y="280" fill="#c850c0" fontSize="12" fontFamily="monospace" fontWeight="600"
+                            transform="rotate(35, 218, 280)">Edge deployment</text>
+                    </svg>
+                </div>
 
 
                 {/* ══════════════════════════════════════════════════════
@@ -408,17 +483,40 @@ export default function SystemGuideView({ onClose }) {
                 ══════════════════════════════════════════════════════ */}
                 <SectionDivider title="NVIDIA-NATIVE" subtitle="100% NVIDIA pipeline from simulation to field" color={NVIDIA_GREEN} />
 
-                {/* Tech stack flow */}
-                <TechFlow steps={[
-                    { icon: "🎮", title: "ISAAC SIM\nSimulation", color: NVIDIA_GREEN },
-                    { icon: "🚁", title: "PEGASUS\nMulti-Drone Physics", color: NVIDIA_GREEN },
-                    { icon: "🧠", title: "ISAAC LAB\n+ skrl", color: BLUE },
-                    { icon: "🔥", title: "PYTORCH\nTraining", color: BLUE },
-                    { icon: "📦", title: "JETSON\nDeployment", color: GOLD },
-                ]} />
+                {/* Tech stack flow — inside a DGX Spark container */}
+                <div style={{
+                    border: `2px solid ${NVIDIA_GREEN}40`,
+                    borderRadius: 14,
+                    background: `${NVIDIA_GREEN}06`,
+                    padding: "28px 32px 24px",
+                    position: "relative",
+                }}>
+                    {/* DGX Spark label */}
+                    <div style={{
+                        position: "absolute", top: -14, left: 32,
+                        background: BG, padding: "0 16px",
+                        display: "flex", alignItems: "center", gap: 10,
+                    }}>
+                        <div style={{ width: 10, height: 10, borderRadius: "50%", background: NVIDIA_GREEN, boxShadow: `0 0 10px ${NVIDIA_GREEN}60` }} />
+                        <span style={{ fontSize: 16, fontFamily: "monospace", fontWeight: 700, color: NVIDIA_GREEN, letterSpacing: "0.15em" }}>DGX SPARK</span>
+                        <span style={{ fontSize: 12, color: DIM, fontFamily: "monospace" }}>128GB · Grace Blackwell</span>
+                    </div>
 
-                <div style={{ fontSize: 14, color: CITE, textAlign: "center", marginTop: 8, fontFamily: "monospace" }}>
-                    Not cobbling together random tools — using NVIDIA's own ecosystem end to end
+                    <div style={{ fontSize: 13, color: DIM, fontFamily: "monospace", textAlign: "center", marginTop: 8, marginBottom: 4, letterSpacing: "0.1em" }}>
+                        ENTIRE TRAINING PIPELINE RUNS LOCALLY ON DGX SPARK
+                    </div>
+
+                    <TechFlow steps={[
+                        { icon: "🎮", title: "ISAAC SIM\nSimulation", color: NVIDIA_GREEN },
+                        { icon: "🚁", title: "PEGASUS\nMulti-Drone Physics", color: NVIDIA_GREEN },
+                        { icon: "🧠", title: "ISAAC LAB\n+ skrl", color: BLUE },
+                        { icon: "🔥", title: "PYTORCH\nTraining", color: BLUE },
+                        { icon: "📦", title: "JETSON\nDeployment", color: GOLD },
+                    ]} />
+
+                    <div style={{ fontSize: 14, color: CITE, textAlign: "center", marginTop: 8, fontFamily: "monospace" }}>
+                        Not cobbling together random tools — using NVIDIA's own ecosystem end to end
+                    </div>
                 </div>
 
                 {/* 3 products × 3 tiers summary */}
