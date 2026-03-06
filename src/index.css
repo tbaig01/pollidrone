@@ -9,9 +9,57 @@
   --gold-text-muted: #bda27e;
   --gold-border: rgba(230, 184, 92, 0.3);
   --green-healthy: #4caf50;
-  
+  --red-alert: #c94c4c;
+
   --font-hud: 'Space Grotesk', sans-serif;
   --hud-padding: 24px;
+}
+
+/* ── Collapse Presentation Animations ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 800;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes countPulse {
+
+  0%,
+  100% {
+    text-shadow: 0 0 40px rgba(201, 76, 76, 0.3);
+  }
+
+  50% {
+    text-shadow: 0 0 80px rgba(201, 76, 76, 0.6);
+  }
+}
+
+@keyframes pulseDot {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 * {
@@ -24,7 +72,8 @@ body {
   font-family: var(--font-hud);
   background-color: var(--bg-deep-space);
   color: var(--gold-primary);
-  overflow: hidden; /* Hide scrollbars for the 3D view */
+  overflow: hidden;
+  /* Hide scrollbars for the 3D view */
   user-select: none;
 }
 
@@ -122,9 +171,21 @@ h2.hud-subtitle {
 
 /* Animations */
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px var(--gold-glow); }
-  100% { transform: scale(1); opacity: 0.8; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+    text-shadow: 0 0 15px var(--gold-glow);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 
 .animate-pulse {
