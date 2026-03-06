@@ -6,6 +6,7 @@ import DeclineMetricsView from './components/DeclineMetricsView';
 import DeclineAlertWidget from './components/DeclineAlertWidget';
 import SystemGuideView from './components/SystemGuideView';
 import SystemGuideWidget from './components/SystemGuideWidget';
+import ProposedHiveView from './components/ProposedHiveView';
 
 export default function App() {
     const globeRef = useRef();
@@ -15,6 +16,7 @@ export default function App() {
     // False = showing the globe with the alert widget hovering on the left.
     const [showMetricsOverlay, setShowMetricsOverlay] = useState(false);
     const [showSystemGuide, setShowSystemGuide] = useState(false);
+    const [selectedProposed, setSelectedProposed] = useState(null);
 
     const handleHiveSelect = useCallback((zone) => {
         // Hide the metrics overlay to focus on the hive
@@ -28,6 +30,10 @@ export default function App() {
                 lng: zone.lng,
                 altitude: 0.8
             }, 1000); // 1000ms transition
+
+            // Keep globe spinning during zoom
+            const controls = globeRef.current.controls();
+            if (controls) controls.autoRotate = true;
         }
 
         // Wait for the transition, then open the HiveView overlay
@@ -53,6 +59,30 @@ export default function App() {
         }
     }, []);
 
+    const handleProposedSelect = useCallback((zone) => {
+        setShowMetricsOverlay(false);
+        if (globeRef.current) {
+            globeRef.current.pointOfView({
+                lat: zone.lat - 5,
+                lng: zone.lng,
+                altitude: 0.8
+            }, 1000);
+            const controls = globeRef.current.controls();
+            if (controls) controls.autoRotate = true;
+        }
+        setTimeout(() => {
+            setSelectedProposed(zone);
+        }, 1200);
+    }, []);
+
+    const handleProposedBack = useCallback(() => {
+        setSelectedProposed(null);
+        if (globeRef.current) {
+            globeRef.current.pointOfView({ altitude: 2.2 }, 1500);
+            globeRef.current.controls().autoRotate = true;
+        }
+    }, []);
+
     return (
         <div style={{ position: 'relative', width: '100vw', height: '100vh', background: '#030303', overflow: 'hidden' }}>
 
@@ -60,6 +90,7 @@ export default function App() {
             <GlobeView
                 globeRef={globeRef}
                 onHiveSelect={handleHiveSelect}
+                onProposedSelect={handleProposedSelect}
             />
 
             {/* Main HUD overlay visible in global mode */}
@@ -136,6 +167,14 @@ export default function App() {
                 <HiveView
                     zone={selectedZone}
                     onBack={handleBackToGlobe}
+                />
+            )}
+
+            {/* Proposed BeeHive Site Overlay */}
+            {selectedProposed && (
+                <ProposedHiveView
+                    zone={selectedProposed}
+                    onBack={handleProposedBack}
                 />
             )}
         </div>

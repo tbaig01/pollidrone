@@ -239,14 +239,14 @@ export default function SystemGuideView({ onClose }) {
                     <MissionCard
                         number="1"
                         title="Agricultural Intelligence"
-                        subtitle="When deployed to a farm, our swarm scouts the field, maps every flower, detects where bees are active, and generates intelligent pollination routes that only fill the gaps."
+                        subtitle="When deployed to a farm, our swarm scouts the field, maps every flower, detects where pollinators are active, and generates intelligent pollination routes that only fill the gaps."
                         icon="🌾"
                         color={GOLD}
                         delay={0}
                         items={[
                             "10 drones sweep and build a living picture of the field",
                             "Bloom-stage classification at flower level",
-                            "Detects natural pollinator activity — avoids zones bees are handling",
+                            "Detects natural pollinator activity — avoids zones pollinators are already handling",
                             "Generates energy-efficient coverage routes with zero overlap",
                             "Models improve over time from accumulated field data",
                         ]}
@@ -254,7 +254,7 @@ export default function SystemGuideView({ onClose }) {
                     <MissionCard
                         number="2"
                         title="Conservation Intelligence"
-                        subtitle="Satellite data combined with drone ground-truth creates the first-ever dataset of its kind — intelligence that helps governments and conservation programmes target efforts."
+                        subtitle="Satellite data combined with drone ground-truth identifies pollinator deficit zones — and once found, we propose a BeeHive deployment to that region's government, charity, or nature conservation body (e.g., DEFRA, WWF, FAO). This is the action layer that differentiates Conservation Intelligence from Agri Intelligence."
                         icon="🛰️"
                         color={BLUE}
                         delay={200}
@@ -262,7 +262,8 @@ export default function SystemGuideView({ onClose }) {
                             "NASA HLS + Sentinel-2 satellite data identifies deficit zones",
                             "Swarm surveys pollinator activity at ground level",
                             "Maps exactly what's happening at flower level",
-                            "Feeds data to governments (DEFRA, FAO)",
+                            "Once a deficit is confirmed, a BeeHive deployment is formally proposed to the region's governing body or conservation partner",
+                            "Feeds actionable proposals to governments (DEFRA, FAO) and charities (WWF, local trusts)",
                             "First-ever dataset combining drone-level + satellite-level analysis",
                         ]}
                     />

@@ -13,6 +13,11 @@ const ZONES = [
     { id: 8, name: "São Paulo, Brazil", lat: -23.55, lng: -46.63, hive: "Zeta-5" },
 ];
 
+const PROPOSED_ZONES = [
+    { id: 101, name: "Borneo, Malaysia", lat: 1.55, lng: 110.35, hive: "Prop-MY-1", type: "proposed" },
+    { id: 102, name: "Great Rift Valley, Kenya", lat: -0.51, lng: 36.15, hive: "Prop-KE-1", type: "proposed" },
+];
+
 class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +40,7 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-export default function GlobeView({ onHiveSelect, globeRef }) {
+export default function GlobeView({ onHiveSelect, onProposedSelect, globeRef }) {
     const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
     const [landPolygons, setLandPolygons] = useState([]);
 
@@ -56,10 +61,20 @@ export default function GlobeView({ onHiveSelect, globeRef }) {
     <circle cx="14" cy="14" r="4" fill="#ffc14d" />
   </svg>`;
 
+    const proposedMarkerSvg = `<svg viewBox="-4 0 36 36" xmlns="http://www.w3.org/2000/svg">
+    <path fill="rgba(76,141,201,0.2)" stroke="#4c8dc9" stroke-width="2" d="M14 0L28 7v14L14 28L0 21V7z" />
+    <circle cx="14" cy="14" r="4" fill="#4c8dc9" />
+  </svg>`;
+
     const markerMaterial = useMemo(() => {
         const map = new THREE.TextureLoader().load(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(markerSvg)}`);
         return new THREE.SpriteMaterial({ map: map, transparent: true });
     }, [markerSvg]);
+
+    const proposedMarkerMaterial = useMemo(() => {
+        const map = new THREE.TextureLoader().load(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(proposedMarkerSvg)}`);
+        return new THREE.SpriteMaterial({ map: map, transparent: true });
+    }, [proposedMarkerSvg]);
 
     useEffect(() => {
         const applyCustomGlobe = () => {
@@ -84,15 +99,31 @@ export default function GlobeView({ onHiveSelect, globeRef }) {
             }
         };
 
-        // Try applying after render
+        // Apply immediately, then on short timeouts for initial render
         const t1 = setTimeout(applyCustomGlobe, 50);
         const t2 = setTimeout(applyCustomGlobe, 200);
         const t3 = setTimeout(applyCustomGlobe, 500);
+        const t4 = setTimeout(applyCustomGlobe, 1000);
+        const t5 = setTimeout(applyCustomGlobe, 2000);
+
+        // Keep auto-rotate alive — OrbitControls can disable it on interaction
+        const interval = setInterval(() => {
+            if (globeRef?.current) {
+                const controls = globeRef.current.controls();
+                if (controls && !controls.autoRotate) {
+                    controls.autoRotate = true;
+                    controls.autoRotateSpeed = 0.5;
+                }
+            }
+        }, 2000);
 
         return () => {
             clearTimeout(t1);
             clearTimeout(t2);
             clearTimeout(t3);
+            clearTimeout(t4);
+            clearTimeout(t5);
+            clearInterval(interval);
         }
     }, [globeRef]);
 
@@ -138,15 +169,23 @@ export default function GlobeView({ onHiveSelect, globeRef }) {
                     }}
                     onObjectClick={onHiveSelect}
 
-                    labelsData={ZONES}
+                    labelsData={[...ZONES, ...PROPOSED_ZONES]}
                     labelLat="lat"
                     labelLng="lng"
                     labelText="name"
                     labelSize={1.5}
-                    labelDotRadius={0.5}
-                    labelColor={() => 'rgba(230, 184, 92, 0.8)'}
+                    labelDotRadius={d => d.type === 'proposed' ? 0.8 : 0.5}
+                    labelDotOrientation={() => 'bottom'}
+                    labelColor={d => d.type === 'proposed' ? 'rgba(76, 141, 201, 0.9)' : 'rgba(230, 184, 92, 0.8)'}
                     labelResolution={2}
                     labelAltitude={0.06}
+                    onLabelClick={d => {
+                        if (d.type === 'proposed') {
+                            onProposedSelect && onProposedSelect(d);
+                        } else {
+                            onHiveSelect && onHiveSelect(d);
+                        }
+                    }}
 
                     arcsData={arcsData}
                     arcColor="color"
