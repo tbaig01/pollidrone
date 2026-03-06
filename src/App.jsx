@@ -149,6 +149,32 @@ export default function App() {
                             Planetary Swarm Control
                         </p>
                     </div>
+
+                    {/* Vercel link */}
+                    <a
+                        href="https://polli-drone.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                            position: 'absolute',
+                            bottom: '24px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            zIndex: 10,
+                            color: 'var(--gold-text-muted)',
+                            fontSize: '13px',
+                            fontFamily: 'monospace',
+                            letterSpacing: '2px',
+                            textDecoration: 'none',
+                            opacity: 0.5,
+                            transition: 'opacity 0.3s ease',
+                            pointerEvents: 'auto',
+                        }}
+                        onMouseEnter={e => e.target.style.opacity = 0.9}
+                        onMouseLeave={e => e.target.style.opacity = 0.5}
+                    >
+                        polli-drone.vercel.app
+                    </a>
                 </>
             )}
 
